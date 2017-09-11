@@ -1,0 +1,28 @@
+# Works with build image 14.04 (Trusty)
+
+
+machine:
+    pre:
+      - wget https://s3.amazonaws.com/circle-downloads/circle-pyenv-python-3.5.1_1.0_amd64.deb
+      - sudo dpkg -i circle-pyenv-python-3.5.1_1.0_amd64.deb      
+
+    services:
+      - redis
+    python:
+      version: 3.5.1
+
+database:
+  post:
+    - psql -c "CREATE EXTENSION postgis;" -d circle_test
+
+dependencies:
+  pre:
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+
+test:
+  override:
+    - flake8 server/
+    - flake8 gatherers/
+
+
